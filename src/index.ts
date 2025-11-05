@@ -24,27 +24,27 @@ app.use('/api/auth', authRoutes);
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
-  explorer: true,
-  customCss: ".swagger-ui .topbar { display: none }",
-  customSiteTitle: 'Projeto',
+    explorer: true,
+    customCss: ".swagger-ui .topbar { display: none }",
+    customSiteTitle: 'Projeto',
 }));
 app.get('/api-docs.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(specs);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(specs);
 });
 
 // Tratamento de erro centralizado
 app.use(errorHandlerMiddleware);
 
 app.get("/", (req, res) => {
-  res.json({
-    message: "Projeto",
-    documentation: "/api-docs",
-    documentationJson: "/api-docs.json",
-  });
+    res.json({
+        message: "Projeto",
+        documentation: "/api-docs",
+        documentationJson: "/api-docs.json",
+    });
 });
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT} 🟢`);
+    console.log(`Server is running on port ${PORT} 🟢`);
 });

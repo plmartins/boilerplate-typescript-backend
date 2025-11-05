@@ -1,11 +1,11 @@
 import bcrypt from 'bcryptjs';
 
 export const passwordUtils = {
-  hashPassword: async (password: string) => {
-    return await bcrypt.hash(password, 10);
-  },
+    hashPassword: async (password: string) => {
+        return await bcrypt.hash(password, 10);
+    },
 
-  comparePasswords: async (password: string, hashedPassword: string) => {
-    return await bcrypt.compare(password, hashedPassword);
-  }
+    comparePasswords: async (password: string, hashedPassword: string) => {
+        return await bcrypt.compare(password, hashedPassword);
+    }
 };

@@ -4,65 +4,65 @@ import { userRepository } from '../repositories/user';
 import { AppError } from '../utils/errors';
 
 export const userService = {
-  
-  createUser: async (userData: Omit<TUser, '_id' | 'createdAt' | 'updatedAt'>) => {
-    const existingEmail = await userRepository.findByEmail(userData.email);
-    if (existingEmail) throw new AppError('Email já cadastrado')
 
-    const existingCpf = await userRepository.findByCpf(userData.cpf);
-    if (existingCpf) throw new AppError('CPF já cadastrado')
+    createUser: async (userData: Omit<TUser, '_id' | 'createdAt' | 'updatedAt'>) => {
+        const existingEmail = await userRepository.findByEmail(userData.email);
+        if (existingEmail) throw new AppError('Email já cadastrado')
 
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-    const user = await userRepository.create({
-      ...userData,
-      password: hashedPassword
-    });
+        const existingCpf = await userRepository.findByCpf(userData.cpf);
+        if (existingCpf) throw new AppError('CPF já cadastrado')
 
-    return user.toObject();
-  },
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        const user = await userRepository.create({
+            ...userData,
+            password: hashedPassword
+        });
 
-  getUserById: async (id: string) => {
-    const user = await userRepository.findById(id);
-    if (!user) throw new AppError('Usuário não encontrado');
+        return user.toObject();
+    },
 
-    const userObj = user.toObject() as any;
-    delete userObj.password;
-    return userObj;
-  },
+    getUserById: async (id: string) => {
+        const user = await userRepository.findById(id);
+        if (!user) throw new AppError('Usuário não encontrado');
 
-  getUserByEmail: async (email: string) => {
-    const user = await userRepository.findByEmail(email);
-    if (!user) throw new AppError('Usuário não encontrado');
-    return user;
-  },
+        const userObj = user.toObject() as any;
+        delete userObj.password;
+        return userObj;
+    },
 
-  updateUser: async (id: string, updateData: Partial<UserDocument>) => {
-    const user = await userRepository.findById(id);
-    if (!user) throw new AppError('Usuário não encontrado');
+    getUserByEmail: async (email: string) => {
+        const user = await userRepository.findByEmail(email);
+        if (!user) throw new AppError('Usuário não encontrado');
+        return user;
+    },
 
-    if (updateData.password) updateData.password = await bcrypt.hash(updateData.password, 10);
+    updateUser: async (id: string, updateData: Partial<UserDocument>) => {
+        const user = await userRepository.findById(id);
+        if (!user) throw new AppError('Usuário não encontrado');
 
-    const updatedUser = await userRepository.update(id, updateData);
-    
-    const userObj = updatedUser?.toObject() as any;
-    delete userObj.password;
-    return userObj;
-  },
+        if (updateData.password) updateData.password = await bcrypt.hash(updateData.password, 10);
 
-  deleteUser: async (id: string) => {
-    const user = await userRepository.findById(id);
-    if (!user) throw new AppError('Usuário não encontrado');
+        const updatedUser = await userRepository.update(id, updateData);
 
-    return await userRepository.delete(id);
-  },
+        const userObj = updatedUser?.toObject() as any;
+        delete userObj.password;
+        return userObj;
+    },
 
-  validatePassword: async (email: string, password: string) => {
-    const user = await userRepository.findByEmail(email);
-    if (!user) throw new AppError('Usuário não encontrado');
+    deleteUser: async (id: string) => {
+        const user = await userRepository.findById(id);
+        if (!user) throw new AppError('Usuário não encontrado');
 
-    const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) throw new AppError('Senha inválida');
+        return await userRepository.delete(id);
+    },
 
-    return user;
-  }
+    validatePassword: async (email: string, password: string) => {
+        const user = await userRepository.findByEmail(email);
+        if (!user) throw new AppError('Usuário não encontrado');
+
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) throw new AppError('Senha inválida');
+
+        return user;
+    }
 };
